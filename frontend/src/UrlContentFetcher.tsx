@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import axios, { AxiosError } from 'axios';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
 
 interface ScanResult {
   url: string;
@@ -37,6 +47,12 @@ const UrlInput: React.FC = () => {
     }
   };
 
+  const chartData =
+    result?.top_words.map(([word, count]) => ({
+      word,
+      count,
+    })) || [];
+
   return (
     <div style={{
       display: 'flex',
@@ -51,7 +67,7 @@ const UrlInput: React.FC = () => {
         background: '#fff',
         borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-        minWidth: '500px',
+        minWidth: '600px',
       }}>
         <h2>Enter a URL</h2>
         <form onSubmit={handleSubmit}>
@@ -92,13 +108,25 @@ const UrlInput: React.FC = () => {
 
         {result && (
           <div style={{ marginTop: '30px', textAlign: 'left' }}>
-            <h3>Top 5 Words</h3>
-            <ul>
-              {result.top_words.map(([word, count], index) => (
-                <li key={index}><strong>{word}</strong>: {count}</li>
-              ))}
-            </ul>
-            <p><strong>Scanned At:</strong> {new Date(result.scanned_at).toLocaleString()}</p>
+            <h3>Top 5 Words Chart</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="word" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+
+            <p style={{ marginTop: '20px' }}>
+              <strong>Scanned At:</strong>{' '}
+              {new Date(result.scanned_at).toLocaleString()}
+            </p>
           </div>
         )}
       </div>
