@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import type { FormEvent } from 'react';
 import axios, { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -16,6 +18,7 @@ const Login: React.FC = () => {
 
       localStorage.setItem('token', response.data.access_token);
       alert('Login successful!');
+      navigate('/url-content-fetcher'); 
     } catch (err) {
       const error = err as AxiosError<{ detail: string }>;
       const errorMsg = error.response?.data?.detail || 'Login failed.';
